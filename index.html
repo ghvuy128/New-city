@@ -3,24 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>new city</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#1c1c1e" />
+  <title>New City</title>
+
   <style>
     body {
       margin: 0;
       font-family: system-ui, sans-serif;
       background: #1c1c1e;
       color: white;
+      text-align: center;
+    }
+
+    header {
+      padding: 10px;
+      background: #2c2c2e;
+    }
+
+    #info {
+      margin: 10px;
+    }
+
+    #buildings {
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100vh;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px;
     }
-    h1 { font-size: 2rem; }
+
+    button {
+      background: #3a3a3c;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+    }
+
+    #map {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      padding: 10px;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .cell {
+      background: #2c2c2e;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
   </style>
 </head>
+
 <body>
-  <h1>new city</h1>
+  <header>
+    <h1>🏙 New City</h1>
+  </header>
+
+  <div id="info">
+    ランク: <span id="rank">1</span> / 50
+  </div>
+
+  <div id="buildings"></div>
+
+  <div id="map"></div>
+
+  <script>
+    let rank = 1;
+    let selectedBuilding = null;
+
+    const buildings = [
+      { name: "🏠 家", unlock: 1 },
+      { name: "🏬 店", unlock: 5 },
+      { name: "🏢 オフィス", unlock: 10 },
+      { name: "🏭 工場", unlock: 20 },
+      { name: "🏰 特別", unlock: 30 }
+    ];
+
+    const buildingsDiv = document.getElementById("buildings");
+    const map = document.getElementById("map");
+    const rankSpan = document.getElementById("rank");
+
+    function renderBuildings() {
+      buildingsDiv.innerHTML = "";
+      buildings.forEach(b => {
+        const btn = document.createElement("button");
+        btn.textContent = b.name;
+        btn.disabled = rank < b.unlock;
+        btn.onclick = () => selectedBuilding = b.name;
+        buildingsDiv.appendChild(btn);
+      });
+    }
+
+    for (let i = 0; i < 25; i++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.onclick = () => {
+        if (selectedBuilding) {
+          cell.textContent = selectedBuilding;
+          rank = Math.min(50, rank + 1);
+          rankSpan.textContent = rank;
+          renderBuildings();
+        }
+      };
+      map.appendChild(cell);
+    }
+
+    renderBuildings();
+  </script>
 </body>
 </html>
